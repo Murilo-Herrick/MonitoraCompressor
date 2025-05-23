@@ -14,7 +14,7 @@
 
 
 byte mac[] = { 0xA8, 0x61, 0x0A, 0x50, 0x4C, 0x7F };  //Endereço MAC  DA PLACA DE ETHERNET DO OPTA 
-char serverAddress[] = "10.110.12.76";  // VARIAVEL PARA ENDEREÇO DE REDE DO SERVER, DEIXAR VAZIO SE FOR ATRIBUIR DHCP
+char serverAddress[] = "10.110.12.73";  // VARIAVEL PARA ENDEREÇO DE REDE DO SERVER, DEIXAR VAZIO SE FOR ATRIBUIR DHCP
 int port = 1880;    //PORTA PARACOMUNICAÇÃO NODE-RED
 
 EthernetClient ethClient;                                       //Cuida da conexão física (TCP).
@@ -122,7 +122,7 @@ void sendReadingsToNodeRED(String tempAmbiente, String humity, String dadosBobin
   Serial.println(json);
   
   client.beginRequest();
-  client.post("/modbus-data", "application/json", json);
+  client.post("/modbus", "application/json", json);
   client.endRequest();
 }
 
