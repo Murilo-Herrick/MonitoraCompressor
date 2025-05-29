@@ -13,8 +13,9 @@
 #include <ArduinoJson.h>
 
 
+
 byte mac[] = { 0xA8, 0x61, 0x0A, 0x50, 0x4C, 0x7F };  //Endereço MAC  DA PLACA DE ETHERNET DO OPTA 
-char serverAddress[] = "10.110.12.73";  // VARIAVEL PARA ENDEREÇO DE REDE DO SERVER, DEIXAR VAZIO SE FOR ATRIBUIR DHCP
+char serverAddress[] = "10.110.12.79";  // VARIAVEL PARA ENDEREÇO DE REDE DO SERVER, DEIXAR VAZIO SE FOR ATRIBUIR DHCP
 int port = 1880;    //PORTA PARACOMUNICAÇÃO NODE-RED
 
 EthernetClient ethClient;                                       //Cuida da conexão física (TCP).
@@ -34,7 +35,7 @@ constexpr auto preDelayBR{ bitduration * 9.6f * 3.5f * 1e6 };
 constexpr auto postDelayBR{ bitduration * 9.6f * 3.5f * 1e6 };
 //constexpr auto preDelayBR { bitduration * 10.0f * 3.5f * 1e6 };
 
-int counter = 0;
+bool bobina = false;
 
 void setup() {
 
@@ -70,16 +71,20 @@ void setup() {
 }
 
 void loop() {
-  // Testes Modbus
-  //Serial.println("Ecrita das bobinas -----");
-  //writeCoilValues();  
+  // Testes escrita bobina 
+
+  writeCoilValues(); 
+  delay(2000);
+     
+    
+   
   //delay(500);
   Serial.println("__________________________________________________________________"); 
   String dadosSensores[3];
   String leitura = readHoldingRegisterValues(); //valores do registrador modbus 
 
   // Usando split para preencher o vetor diretamente
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     dadosSensores[i] = leitura.substring(0, leitura.indexOf(','));
     leitura = leitura.substring(leitura.indexOf(',') + 1);
   }
@@ -102,7 +107,7 @@ void loop() {
   // VARIAVEL PARA USO NO GET E POST ;
 //  readHoldingRegisterValues();
 
-  sendReadingsToNodeRED(tempAmbiente, humity, dadosBobina);
+  sendReadingsToNodeRED(tempAmbiente, humity, dadosBobina, pressao);
 
   Serial.println("final");
   
@@ -110,14 +115,13 @@ void loop() {
 
  // Serial.println(dadosSensores);
   Serial.println("__________________________________________________________________");
-  counter++;
 
   delay(2000);
  
 }
  
-void sendReadingsToNodeRED(String tempAmbiente, String humity, String dadosBobina) {
-  String json = "{\"dadosTemperatura\":" + tempAmbiente +",\"dadosHumity\":"+ humity +",\"dadosBobinas\":" + dadosBobina + "}";
+void sendReadingsToNodeRED(String tempAmbiente, String humity, String dadosBobina, String pressao) {
+  String json = "{\"temperatura\":" + tempAmbiente +",\"umidade\":"+ humity +",\"dadosBobinas\":" + dadosBobina + ",\"pressao\":" + pressao + "}";
 
   Serial.println(json);
   
@@ -126,12 +130,50 @@ void sendReadingsToNodeRED(String tempAmbiente, String humity, String dadosBobin
   client.endRequest();
 }
 
+bool getBobinaFromNodeRED() {
+  client.get("/bobina");
+  int statusCode = client.responseStatusCode();
+
+  if (statusCode == 200) {
+    String response = client.responseBody();
+    Serial.println("Resposta: " + response);
+
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc, response);
+
+    if (error) {
+      Serial.print("Erro ao analisar JSON: ");
+      Serial.println(error.f_str());
+      return false;
+    }
+
+    bobina = doc["bobina"];
+    Serial.print("Bobina json: ");
+    Serial.println(bobina);
+    return bobina;
+
+  } else {
+    Serial.print("Erro HTTP: ");
+    Serial.println(statusCode);
+    return false;
+  }
+}
+
 /*
   Escreve valores em Coils no servidor no endereço especificado.
 */
 
 void writeCoilValues() {
-    byte coilValue = ((counter % 2) == 0) ? 0x00 : 0x01;
+
+    byte coilValue;
+    bobina = getBobinaFromNodeRED();
+
+    if (bobina){
+      coilValue = 0x00;
+    }
+    else{
+      coilValue = 0x01;
+    }
 
     Serial.print("Escrevendo valores em Coil ... ");
 
@@ -149,7 +191,7 @@ void writeCoilValues() {
   Lê valores de Coils do servidor no endereço especificado.
 */
 
-  String readCoilValues() {
+String readCoilValues() {
     Serial.print("Lendo valores de Coils ... ");
     String coilResultado;
     // Lê 10 valores de Coils do servidor com ID 42, endereço 0x00
@@ -183,7 +225,7 @@ String readHoldingRegisterValues() {
   String SensoresResultado;
 
   // Lê 10 valores de Holding Registers do servidor com ID 1, endereço 0x01
-  if (!ModbusRTUClient.requestFrom(1, HOLDING_REGISTERS, 0x01, 2)) {
+  if (!ModbusRTUClient.requestFrom(1, HOLDING_REGISTERS, 0x01, 3)) {
     Serial.print("falhou! ");
     Serial.println(ModbusRTUClient.lastError());
   } else {

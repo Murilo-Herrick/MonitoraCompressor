@@ -93,9 +93,9 @@ void setup() {
     // adicionando HoldingRedisters Saida analogica-40000(Float)
     //Adicionando Memoria valor digital (Display)-End.40002(Int)
 
-  mb.addHreg(1);// saida analogica temp
-  mb.addHreg(2);// saida analogica Corrente 
-  mb.addHreg(3, pressRead);// saida analogica pressao 
+  mb.addHreg(1);
+  mb.addHreg(2);
+  mb.addHreg(3, registrador3);// saida analogica pressao 
 
   //mb.addHreg(2, 0);// valor display entrada de dados digitais 
 
@@ -106,7 +106,9 @@ void loop() {
 
  mb.task();
 
- //atualizaRele();
+ atualizaRele();
+
+
 
   //readCorrente();
   //ligaDesligaCopress();
@@ -120,10 +122,14 @@ void loop() {
  // Serial.println("");
  // Serial.println("");
   Serial.println(tempAmbiente());
-  Serial.println(estadoCoil);
-  Serial.println(estadoRele1);
+ // Serial.println(estadoCoil);
+  //Serial.println(estadoRele1);
 
-  float pressRead = leituraPress();
+   //float pressRead 
+  
+
+  //limparBufferSerial();
+
 }
 /*
 int readCorrente(){
@@ -150,7 +156,14 @@ void atualizaRele() {
   }
 }
 
-bool ligaDesligaCompress(){
+void limparBufferSerial() {
+  while (mySerial.available() > 0) {
+    Serial.read();
+  }
+
+}
+
+/*bool ligaDesligaCompress(){
 
   bool estadoRele1 = false;
   uint16_t compressor;
@@ -169,7 +182,7 @@ bool ligaDesligaCompress(){
   }
 
   return estadoRele1;
-}
+}*/
 /*
 int readTempMotor(){
 
@@ -191,9 +204,11 @@ float tempAmbiente(){
   int humidity = 0;
   tempRegistrador = static_cast<uint16_t>(dht11.readTemperature());
   tempRegistrador2 = static_cast<uint16_t>(dht11.readHumidity());
+  registrador3 = static_cast<uint16_t>(leituraPress());
   int result = dht11.readTemperatureHumidity(temperature, humidity);
   uint16_t byte1 =mb.Hreg(1,tempRegistrador);
   uint16_t byte2 =mb.Hreg(2,tempRegistrador2);
+  uint16_t byte3= mb.Hreg(3,registrador3);
 
   if (result == 0) {
     Serial.print("Temperatura: ");
@@ -228,10 +243,10 @@ float leituraPress(){
     Serial.print("  -->  Pressão: ");
     Serial.print(pressao_kPa, 2);
     Serial.println(" kPa");
+    return pressao_kPa;
   } else {
     Serial.println("HX711 não pronto.");
   }
-  
 }
 
 
