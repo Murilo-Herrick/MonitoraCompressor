@@ -128,7 +128,7 @@ void loop() {
    //float pressRead 
   
 
-  //limparBufferSerial();
+  limparBufferSerial();
 
 }
 /*
@@ -157,7 +157,7 @@ void atualizaRele() {
 }
 
 void limparBufferSerial() {
-  while (mySerial.available() > 0) {
+  while (mySerial.available()) {
     Serial.read();
   }
 
