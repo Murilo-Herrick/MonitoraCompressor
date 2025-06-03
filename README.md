@@ -43,7 +43,7 @@ Este projeto consiste em um sistema completo para monitoramento e controle de um
 ├── IOT/ # Código .ino para os dispositivos Slave e Master
 │ ├── slave_modbus.ino
 │ └── master_control.ino
-├── backend/ # Backend Python com app.py para notificações e persistência
+├── dataService/ # Backend Python com app.py para notificações e persistência
 ├── node-red/ # Fluxos e configurações do Node-RED
 ├── docker/ # Arquivos Docker e docker-compose para ambiente conteinerizado
 └── README.md
