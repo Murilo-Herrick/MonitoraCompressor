@@ -77,5 +77,50 @@ def save_db():
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
+@app.route('/historicoCompressor', methods=['GET'])
+def historico_compressor():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(""" SELECT horario, temperatura, umidade, pressao, estado, notificacao FROM compressor ORDER BY horario DESC;""")
+        compressor_dados = cursor.fetchall()
+        
+        cursor.close()
+        conn.close()
+    
+        return jsonify({
+            "message": "Dados selecionados do banco com sucesso!",
+            "Dados" : compressor_dados
+            }), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+@app.route('/historicoEmergencias', methods=['GET'])
+def historico_emergencias():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT horario, temperatura, umidade, pressao, estado, notificacao 
+            FROM compressor 
+            WHERE temperatura > 50 OR pressao > 40 OR umidade > 85
+            ORDER BY horario DESC;
+        """)
+        emergencias = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "message": "Histórico de emergências recuperado com sucesso!",
+            "dados": emergencias
+        }), 200
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
