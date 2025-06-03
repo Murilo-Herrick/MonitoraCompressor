@@ -1,31 +1,41 @@
-
 version: '3.8'
 services:
   node-red:
-    image: nodered/node-red
+    build: ./Node-red
     ports:
       - "1880:1880"
     volumes:
       - nodered_data:/data
+
     networks:
-      - comp
+      - compressor
 
   db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: pedro123
-      MYSQL_DATABASE: dados_comp
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: compressor
     volumes:
       - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "3308:3306"  
+      - "3309:3306"  
     networks:
-      - comp
+      - compressor
+  
+  data-service:
+    build: ./dataService
+    ports: 
+      - "5001:5000"
+    networks:
+      - compressor
+    depends_on:
+      - node-red
 
 volumes: 
   db_data:
   nodered_data:
 
 networks:
-  comp: 
+  compressor: 
     driver: bridge

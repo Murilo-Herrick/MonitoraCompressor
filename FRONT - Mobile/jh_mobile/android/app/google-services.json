@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1018148994227",
+    "project_id": "jhmobile-58f96",
+    "storage_bucket": "jhmobile-58f96.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018148994227:android:851a2e0a87f8a3e81c04c6",
+        "android_client_info": {
+          "package_name": "com.example.jh_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv1MTWxM_74IYvgqPiQxi5B3aXkLBMvMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

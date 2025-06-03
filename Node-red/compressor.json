@@ -1,0 +1,325 @@
+[
+    {
+        "id": "1459331f22612cb1",
+        "type": "tab",
+        "label": "simulaDados",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "deb30e6069bd4e1b",
+        "type": "http in",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "url": "/modbus",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 200,
+        "wires": [
+            [
+                "f22308fe35389bc4",
+                "76b7ab566307625e",
+                "da035f7b8307fef4"
+            ]
+        ]
+    },
+    {
+        "id": "f22308fe35389bc4",
+        "type": "debug",
+        "z": "1459331f22612cb1",
+        "name": "Post",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "5f3f2714a83f9525",
+        "type": "http response",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 630,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "b56040ec24d215c6",
+        "type": "http in",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "url": "/dados",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "dd71df27de4efe49"
+            ]
+        ]
+    },
+    {
+        "id": "dd71df27de4efe49",
+        "type": "function",
+        "z": "1459331f22612cb1",
+        "name": "recebe  dadosdo modbus",
+        "func": "let dados = flow.get(\"dados_bobina\") || {};\nmsg.payload = dados;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 260,
+        "wires": [
+            [
+                "1a6ed5ca185826c7"
+            ]
+        ]
+    },
+    {
+        "id": "1a6ed5ca185826c7",
+        "type": "http response",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 630,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "8a53ad850ea28252",
+        "type": "http in",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "url": "/estadoBobina",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 480,
+        "wires": [
+            [
+                "da076008f342ef1c"
+            ]
+        ]
+    },
+    {
+        "id": "1cb39e3ae0b7cf91",
+        "type": "http in",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "url": "/bobina",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 540,
+        "wires": [
+            [
+                "eb78525578f290df"
+            ]
+        ]
+    },
+    {
+        "id": "1a33f01948a5c5d0",
+        "type": "http response",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 570,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "4bfb9c5eeb05c36e",
+        "type": "http response",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 570,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "da076008f342ef1c",
+        "type": "function",
+        "z": "1459331f22612cb1",
+        "name": "function 2",
+        "func": "if (msg.payload.bobina !== undefined) {\n    flow.set(\"estado_bobina\", msg.payload.bobina); \n    flow.set(\"data_bobina\", new Date().toLocaleString('pt-BR'));\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 480,
+        "wires": [
+            [
+                "d5017d2bf09fcdbb",
+                "4bfb9c5eeb05c36e"
+            ]
+        ]
+    },
+    {
+        "id": "eb78525578f290df",
+        "type": "function",
+        "z": "1459331f22612cb1",
+        "name": "function 3",
+        "func": "let bobina = flow.get(\"estado_bobina\") || false;\nlet dataBobina = flow.get(\"data_bobina\") || null;\n\nmsg.payload = {\n    bobina: bobina,\n    data: dataBobina\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 540,
+        "wires": [
+            [
+                "1a33f01948a5c5d0",
+                "d62f36171d0246a7"
+            ]
+        ]
+    },
+    {
+        "id": "d62f36171d0246a7",
+        "type": "debug",
+        "z": "1459331f22612cb1",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "76b7ab566307625e",
+        "type": "function",
+        "z": "1459331f22612cb1",
+        "name": "trata dados do modbus",
+        "func": "msg.payload.dataHora = new Date().toLocaleString('pt-BR');\nflow.set(\"dados_bobina\", msg.payload);\nmsg.payload = { status: \"ok\", mensagem: \"Dados salvos com sucesso\", dataHora: msg.payload.dataHora };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 200,
+        "wires": [
+            [
+                "5f3f2714a83f9525",
+                "d5017d2bf09fcdbb"
+            ]
+        ]
+    },
+    {
+        "id": "d5017d2bf09fcdbb",
+        "type": "function",
+        "z": "1459331f22612cb1",
+        "name": "Montar notificação",
+        "func": "let bobina = msg.payload.bobina;\nlet temperatura = msg.payload.temperatura;\nlet pressao = msg.payload.pressao;\nlet umidade = msg.payload.umidade;\n\nlet evento;\nlet mensagem = \"\";\nlet hora = new Date().toLocaleTimeString();\n\nif (bobina !== undefined) {\n  evento = bobina ? \"ligar\" : \"desligar\";\n} else if (\n  (temperatura !== undefined && temperatura > 50) ||\n  (pressao !== undefined && pressao > 40) ||\n  (umidade !== undefined && umidade > 85)\n) {\n  evento = \"critico\";\n\n  if (temperatura > 50) mensagem += \"Temperatura muito alta! \";\n  if (pressao > 40) mensagem += \"Pressão muito alta! \";\n  if (umidade > 85) mensagem += \"Umidade muito alta! \";\n} else {\n  return null;\n}\n\nmsg.payload = {\n  evento: evento,\n  hora: hora,\n  mensagem: mensagem.trim()\n};\n\nflow.set(\"notificacao\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 360,
+        "wires": [
+            [
+                "47cc17c1eabc6762"
+            ]
+        ]
+    },
+    {
+        "id": "47cc17c1eabc6762",
+        "type": "http request",
+        "z": "1459331f22612cb1",
+        "name": "Enviar notificação (POST)",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://data-service:5000/sendNoti",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 930,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0b2fb7529938993c",
+        "type": "http request",
+        "z": "1459331f22612cb1",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://data-service:5000/saveDB",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 580,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "da035f7b8307fef4",
+        "type": "function",
+        "z": "1459331f22612cb1",
+        "name": "saveDB",
+        "func": "let dados = flow.get(\"dados_bobina\") || {};\nlet estado = flow.get(\"estado_bobina\") || \"desligado\";\nlet notificacao = flow.get(\"notificacao\") || {};\n\nmsg.payload = {\n    horario: new Date().toLocaleString('pt-BR'),\n    temperatura: dados.temperatura || null,\n    umidade: dados.umidade || null,\n    pressao: dados.pressao || null,\n    estado: estado,\n    notificacao: notificacao.notificacao || \"Sem alerta\"\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 60,
+        "wires": [
+            [
+                "0b2fb7529938993c"
+            ]
+        ]
+    }
+]
