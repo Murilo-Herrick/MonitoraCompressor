@@ -66,3 +66,16 @@ Future<void> enviarEstado(bool estado) async {
     throw Exception('Erro na requisição POST: $e');
   }
 }
+
+Future<List<dynamic>> fetchEmergencias() async {
+  final ip = await getIp();
+
+  final response = await http.get(Uri.parse('http://$ip:5001/historicoEmergencias'));
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return data['dados'];
+  } else {
+    throw Exception('Erro ao carregar emergências: ${response.statusCode}');
+  }
+}
