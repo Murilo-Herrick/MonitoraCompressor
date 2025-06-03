@@ -6,6 +6,7 @@
 
 #define DT  4
 #define SCK  3
+#define LIMITE_BUFFER 60  // Quando estiver perto de encher
 
 //SoftwareSerial mySerial(11,10);
 #define Mod_SLAVE 1
@@ -26,7 +27,7 @@ SoftwareSerial mySerial(rxPin,txPin);
 DHT11 dht11(2);
 
 int result;
-
+#define DEBUG 0  // Ative para mostrar logs via Serial
 
 // CRIAÇÃO DO OBJETO SLAVE MODBUS
 ModbusSerial mb;
@@ -121,14 +122,16 @@ void loop() {
   
  // Serial.println("");
  // Serial.println("");
+ #if DEBUG
   Serial.println(tempAmbiente());
+ #endif
+ tempAmbiente();
  // Serial.println(estadoCoil);
   //Serial.println(estadoRele1);
 
    //float pressRead 
   
 
-  limparBufferSerial(mySerial);
 
 }
 /*
@@ -156,12 +159,7 @@ void atualizaRele() {
   }
 }
 
-void limparBufferSerial(SoftwareSerial &serial) {
-  while (serial.available()) {
-    serial.read();
-  }
 
-}
 
 /*bool ligaDesligaCompress(){
 
@@ -202,14 +200,29 @@ float tempAmbiente(){
     
   int temperature = 0;
   int humidity = 0;
-  tempRegistrador = static_cast<uint16_t>(dht11.readTemperature());
-  tempRegistrador2 = static_cast<uint16_t>(dht11.readHumidity());
-  registrador3 = static_cast<uint16_t>(leituraPress());
-  int result = dht11.readTemperatureHumidity(temperature, humidity);
-  uint16_t byte1 =mb.Hreg(1,tempRegistrador);
-  uint16_t byte2 =mb.Hreg(2,tempRegistrador2);
-  uint16_t byte3= mb.Hreg(3,registrador3);
+  uint16_t novaTemp = static_cast<uint16_t>(dht11.readTemperature());
+  uint16_t novaHum = static_cast<uint16_t>(dht11.readHumidity());
+  uint16_t novaPress = static_cast<uint16_t>(leituraPress());
 
+  int result = dht11.readTemperatureHumidity(temperature, humidity);
+
+  // Só atualiza os Hregs se houver mudança
+  if (novaTemp != tempRegistrador) {
+    tempRegistrador = novaTemp;
+    mb.Hreg(1, tempRegistrador);
+  }
+
+  if (novaHum != tempRegistrador2) {
+    tempRegistrador2 = novaHum;
+    mb.Hreg(2, tempRegistrador2);
+  }
+
+  if (novaPress != registrador3) {
+    registrador3 = novaPress;
+    mb.Hreg(3, registrador3);
+  }
+
+  #if DEBUG
   if (result == 0) {
     Serial.print("Temperatura: ");
     Serial.print(temperature);
@@ -222,6 +235,7 @@ float tempAmbiente(){
     Serial.print("Erro na leitura: ");
     Serial.println(DHT11::getErrorString(result));
   }
+#endif
 
 }
 
@@ -238,11 +252,13 @@ float leituraPress(){
     if (pressao_kPa < 0) pressao_kPa = 0;
     if (pressao_kPa > MAX_PRESSAO) pressao_kPa = MAX_PRESSAO;
 
+   #if DEBUG
     Serial.print("Leitura bruta: ");
     Serial.print(leitura);
     Serial.print("  -->  Pressão: ");
     Serial.print(pressao_kPa, 2);
     Serial.println(" kPa");
+   #endif
     return pressao_kPa;
   } else {
     Serial.println("HX711 não pronto.");

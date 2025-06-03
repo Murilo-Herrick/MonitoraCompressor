@@ -115,7 +115,8 @@
         "y": 480,
         "wires": [
             [
-                "da076008f342ef1c"
+                "da076008f342ef1c",
+                "da035f7b8307fef4"
             ]
         ]
     },
@@ -250,7 +251,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 670,
+        "x": 710,
         "y": 360,
         "wires": [
             [
@@ -274,7 +275,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 930,
+        "x": 950,
         "y": 360,
         "wires": [
             []
@@ -285,7 +286,7 @@
         "type": "http request",
         "z": "1459331f22612cb1",
         "name": "",
-        "method": "GET",
+        "method": "POST",
         "ret": "txt",
         "paytoqs": "ignore",
         "url": "http://data-service:5000/saveDB",
@@ -296,8 +297,8 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 580,
-        "y": 60,
+        "x": 460,
+        "y": 360,
         "wires": [
             []
         ]
@@ -307,15 +308,15 @@
         "type": "function",
         "z": "1459331f22612cb1",
         "name": "saveDB",
-        "func": "let dados = flow.get(\"dados_bobina\") || {};\nlet estado = flow.get(\"estado_bobina\") || \"desligado\";\nlet notificacao = flow.get(\"notificacao\") || {};\n\nmsg.payload = {\n    horario: new Date().toLocaleString('pt-BR'),\n    temperatura: dados.temperatura || null,\n    umidade: dados.umidade || null,\n    pressao: dados.pressao || null,\n    estado: estado,\n    notificacao: notificacao.notificacao || \"Sem alerta\"\n};\n\nreturn msg;\n",
+        "func": "let dados = flow.get(\"dados_bobina\") || {};\nlet estado_raw = flow.get(\"estado_bobina\");\nlet notificacao = flow.get(\"notificacao\") || {};\n\nlet estado = (estado_raw == 1) ? \"ligado\" : \"desligado\";\n\nmsg.payload = {\n    horario: new Date().toLocaleString('pt-BR'),\n    temperatura: dados.temperatura || null,\n    umidade: dados.umidade || null,\n    pressao: dados.pressao || null,\n    estado: estado,\n    notificacao: notificacao.notificacao || \"Sem alerta\"\n};\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
-        "y": 60,
+        "x": 300,
+        "y": 360,
         "wires": [
             [
                 "0b2fb7529938993c"

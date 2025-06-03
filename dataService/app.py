@@ -10,7 +10,8 @@ db_config = {
     'host': 'db',
     'user': 'root',
     'password': '1234',
-    'database': 'compressor'
+    'database': 'compressor',
+    'port': 3306
 }
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -53,7 +54,7 @@ def save_db():
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("""" INSERT INTO compressor (
+        cursor.execute(""" INSERT INTO compressor (
                        horario,
                        temperatura,
                        umidade,
