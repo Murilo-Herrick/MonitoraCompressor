@@ -37,6 +37,7 @@ Este projeto consiste em um sistema completo para monitoramento e controle de um
 ---
 
 ## Estrutura do Repositório
+```
 /
 ├── mobile_flutter/ # Código fonte do app Flutter
 ├── IOT/ # Código .ino para os dispositivos Slave e Master
@@ -46,7 +47,7 @@ Este projeto consiste em um sistema completo para monitoramento e controle de um
 ├── node-red/ # Fluxos e configurações do Node-RED
 ├── docker/ # Arquivos Docker e docker-compose para ambiente conteinerizado
 └── README.md
-
+```
 
 ---
 
@@ -66,7 +67,10 @@ Este projeto consiste em um sistema completo para monitoramento e controle de um
 ## Como Rodar o Projeto
 
 1. **Configurar o ambiente Docker:**
-   ```bash
+   ```
+   Rode em algum terminal:
+   
    docker-compose up -build
+   ```
 
 2. **baixar o apk do flutter**
