@@ -15,8 +15,8 @@
 
 
 byte mac[] = { 0xA8, 0x61, 0x0A, 0x50, 0x4C, 0x7F };  //Endereço MAC  DA PLACA DE ETHERNET DO OPTA 
-char serverAddress[] = "10.110.12.95";  // VARIAVEL PARA ENDEREÇO DE REDE DO SERVER, DEIXAR VAZIO SE FOR ATRIBUIR DHCP
-int port = 1880;    //PORTA PARACOMUNICAÇÃO NODE-RED
+char serverAddress[] = "10.110.18.6";  // VARIAVEL PARA ENDEREÇO DE REDE DO SERVER, DEIXAR VAZIO SE FOR ATRIBUIR DHCP
+int port = 9095;    //PORTA PARACOMUNICAÇÃO NODE-RED
 
 EthernetClient ethClient;                                       //Cuida da conexão física (TCP).
 HttpClient client = HttpClient(ethClient, serverAddress, port);// Usa o EthernetClient para fazer comunicações HTTP.

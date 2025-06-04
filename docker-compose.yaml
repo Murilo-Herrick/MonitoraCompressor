@@ -3,7 +3,7 @@ services:
   node-red:
     build: ./Node-red
     ports:
-      - "1880:1880"
+      - "9095:1880"
     volumes:
       - nodered_data:/data
 
@@ -26,7 +26,7 @@ services:
   data-service:
     build: ./dataService
     ports: 
-      - "5001:5000"
+      - "5010:5000"
     networks:
       - compressor
     depends_on:

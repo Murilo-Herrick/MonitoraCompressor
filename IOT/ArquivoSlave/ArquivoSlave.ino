@@ -76,7 +76,7 @@ void setup() {
   Serial.begin(115200);
 
   //Configurando os parametros Modbus 
-  mb.config(&mySerial, 9600, ControlPin);
+  mb.config(&mySerial, 9600);
   mb.setSlaveId(1);
   // adicionando 3 saidas ficticias D0.0,D0.1,D0.2 (valores bolleanos)
   // endereços 00000/00001/00002- endereçamento ModBus 
