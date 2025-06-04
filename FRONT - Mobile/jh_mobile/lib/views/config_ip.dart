@@ -11,6 +11,7 @@ class _ConfigIPState extends State<ConfigIP> {
   final _formKey = GlobalKey<FormState>();
   final ipController = TextEditingController();
   final portController = TextEditingController();
+  final portAPIController = TextEditingController();
 
   String? ssid;
   String? localIP;
@@ -27,14 +28,16 @@ class _ConfigIPState extends State<ConfigIP> {
   void dispose() {
     ipController.dispose();
     portController.dispose();
+    portAPIController.dispose();
     super.dispose();
   }
 
   Future<void> _carregarDados() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      ipController.text = prefs.getString('ip') ?? '';
-      portController.text = prefs.getString('port') ?? '';
+      ipController.text = prefs.getString('ip') ?? '10.110.18.6';
+      portController.text = prefs.getString('port') ?? '9095';
+      portAPIController.text = prefs.getString('portAPI') ?? '5010';
     });
   }
 
@@ -81,6 +84,7 @@ class _ConfigIPState extends State<ConfigIP> {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('ip', ipController.text.trim());
+    await prefs.setString('portAPI', portAPIController.text.trim());
     await prefs.setString('port', portController.text.trim());
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -132,6 +136,14 @@ class _ConfigIPState extends State<ConfigIP> {
                     label: "Porta",
                     hint: "Ex: 8080",
                     prefixIcon: Icons.dns,
+                    validator: _validarPorta,
+                  ),
+                  const SizedBox(height: 24),
+                  CustomTextField(
+                    controller: portAPIController,
+                    label: "Porta da API",
+                    hint: "Ex: 5000",
+                    prefixIcon: Icons.api,
                     validator: _validarPorta,
                   ),
                   const SizedBox(height: 40),

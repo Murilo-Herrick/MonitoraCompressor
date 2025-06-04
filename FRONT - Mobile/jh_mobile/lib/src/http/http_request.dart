@@ -10,6 +10,11 @@ Future<String> getPort() async {
   return prefs.getString('port') ?? '1880';
 }
 
+Future<String> getPortAPI() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('portAPI') ?? '5010';
+}
+
 Future<Map<String, dynamic>> fetchDados() async {
   try {
     final ip = await getIp();
@@ -69,8 +74,9 @@ Future<void> enviarEstado(bool estado) async {
 
 Future<List<dynamic>> fetchEmergencias() async {
   final ip = await getIp();
+  final portAPI = await getPortAPI();
 
-  final response = await http.get(Uri.parse('http://$ip:5001/historicoEmergencias'));
+  final response = await http.get(Uri.parse('http://$ip:$portAPI/historicoEmergencias'));
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
